@@ -1,11 +1,5 @@
-import SignInWrapper from "@/components/sign-in";
-
-const SignInPage = () => {
-  return (
-    <>
-      <SignInWrapper />
-    </>
-  );
-};
-
-export default SignInPage;
+import { SignIn } from "@clerk/nextjs";
+ 
+export default function Page() {
+  return <SignIn />;
+}
