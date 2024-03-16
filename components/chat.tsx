@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
 import { cn } from '@/lib/utils'
@@ -8,19 +9,21 @@ import { ChatScrollAnchor } from '@/components/chat-scroll-anchor'
 import { useLocalStorage } from '@/lib/hooks/use-local-storage'
 import { useEffect, useState } from 'react'
 import { useUIState, useAIState } from 'ai/rsc'
-import { Session } from '@/lib/types'
+
 import { usePathname, useRouter } from 'next/navigation'
 import { Message } from '@/lib/chat/actions'
 import { toast } from 'sonner'
+import { useAuth } from "@clerk/nextjs";
 
 export interface ChatProps extends React.ComponentProps<'div'> {
   initialMessages?: Message[]
   id?: string
-  session?: Session
+
   missingKeys: string[]
 }
 
-export function Chat({ id, className, session, missingKeys }: ChatProps) {
+export function Chat({ id, className, missingKeys }: ChatProps) {
+  
   const router = useRouter()
   const path = usePathname()
   const [input, setInput] = useState('')
@@ -29,14 +32,21 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
   const isLoading = true
 
   const [_, setNewChatId] = useLocalStorage('newChatId', id)
-
+  const { isLoaded, userId, sessionId, getToken } = useAuth();
+  if (!isLoaded || !userId) {
+    return null;
+  }
+  // In case the user signs out while on the page.
+  if (userId) {
+  
+   
   useEffect(() => {
-    if (session?.user) {
+    if (userId) {
       if (!path.includes('chat') && messages.length === 1) {
         window.history.replaceState({}, '', `/chat/${id}`)
       }
     }
-  }, [id, path, session?.user, messages])
+  }, [id, path, userId, messages])
 
   useEffect(() => {
     const messagesLength = aiState.messages?.length
@@ -70,4 +80,6 @@ export function Chat({ id, className, session, missingKeys }: ChatProps) {
       <ChatPanel id={id} input={input} setInput={setInput} />
     </>
   )
+}
+ 
 }

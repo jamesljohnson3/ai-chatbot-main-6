@@ -1,5 +1,6 @@
 import { GeistSans } from 'geist/font/sans'
 import { GeistMono } from 'geist/font/mono'
+import { ClerkProvider } from '@clerk/nextjs'
 
 import '@/app/globals.css'
 import { cn } from '@/lib/utils'
@@ -34,7 +35,8 @@ interface RootLayoutProps {
 }
 
 export default function RootLayout({ children }: RootLayoutProps) {
-  return (
+  return (    <ClerkProvider>
+
     <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
@@ -57,6 +59,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <TailwindIndicator />
         </Providers>
       </body>
-    </html>
+    </html>    </ClerkProvider>
+
   )
 }

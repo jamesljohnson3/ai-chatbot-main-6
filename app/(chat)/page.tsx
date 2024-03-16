@@ -1,22 +1,21 @@
 import { nanoid } from '@/lib/utils'
 import { Chat } from '@/components/chat'
 import { AI } from '@/lib/chat/actions'
-import { auth } from '@/auth'
-import { Session } from '@/lib/types'
+import { auth, currentUser } from "@clerk/nextjs";
+
 import { getMissingKeys } from '../actions'
 
-export const metadata = {
-  title: 'Next.js AI Chatbot'
-}
+
 
 export default async function IndexPage() {
   const id = nanoid()
-  const session = (await auth()) as Session
+  const user = await currentUser()
   const missingKeys = await getMissingKeys()
 
   return (
     <AI initialAIState={{ chatId: id, messages: [] }}>
-      <Chat id={id} session={session} missingKeys={missingKeys} />
+      <Chat id={id} 
+      missingKeys={missingKeys} />
     </AI>
   )
 }

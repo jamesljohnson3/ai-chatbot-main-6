@@ -34,7 +34,7 @@ import {
 import { saveChat } from '@/app/actions'
 import { SpinnerMessage, UserMessage } from '@/components/stocks/message'
 import { Chat } from '@/lib/types'
-import { auth } from '@/auth'
+import { auth } from "@clerk/nextjs";
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || ''
@@ -450,13 +450,13 @@ export const AI = createAI<AIState, UIState>({
   unstable_onSetAIState: async ({ state }) => {
     'use server'
 
-    const session = await auth()
+    const { userId } = auth();
 
-    if (session && session.user) {
+    if (userId) {
       const { chatId, messages } = state
 
       const createdAt = new Date()
-      const userId = session.user.id as string
+
       const path = `/chat/${chatId}`
       const title = messages[0].content.substring(0, 100)
 
